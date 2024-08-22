@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model DapperAndEFCore.Models.ProductVM
+
+<div class="text-center">
+    <h1 class="display-4">Products</h1>
+    
+    <ul class="list-group">
+        @foreach (var prod in Model.Products)
+        {
+            <li class="list-group-item">
+                <span>@prod.product_name @prod.product_description @prod.product_price</span>
+                <div>
+                    <a asp-controller="Home" asp-action="Edit" asp-route-id="@prod.id">Edit</a>
+                </div>
+                <div>
+                    <form method="post" asp-route="deleteProduct" >
+                        <input asp-for="@prod.id" hidden />
+                        <input asp-for="@prod.product_name" type="text" hidden />
+                        <input asp-for="@prod.product_description" type="text" hidden />
+                        <input asp-for="@prod.product_price" type="number" hidden />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </li>
+        }
+    </ul>
+    <div>
+        <a asp-controller="Home" asp-action="Add">Add New Product</a>
+    </div>
+</div>

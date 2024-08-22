@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Edit";
+}
+
+@model DapperAndEFCore.Models.Product;
+
+<div>
+    <h1>Edit</h1>
+    <form method="post">
+        <div class="input-group mb-3 mt-3">
+            <input asp-for="id" hidden />
+            <input asp-for="product_name" />
+            <input asp-for="product_description" />
+            <input asp-for="product_price" />
+            <button class="btn btn-primary" type="submit">Edit Product</button>
+        </div>
+        <div>
+            <a asp-controller="Home" asp-action="Index">Back to list</a>
+        </div>
+    </form>
+</div>

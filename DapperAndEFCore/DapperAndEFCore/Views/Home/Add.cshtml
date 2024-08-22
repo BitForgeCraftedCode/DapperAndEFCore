@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Add Product";
+}
+
+@model DapperAndEFCore.Models.Product;
+
+<div>
+    <h1>Add New Product</h1>
+    <form method="post">
+        <div class="input-group mb-3 mt-3">
+           @*  <input asp-for="id" hidden /> *@
+            <input asp-for="product_name" type="text" />
+            <input asp-for="product_description" type="text" />
+            <input asp-for="product_price" type="text" />
+            <button class="btn btn-primary" type="submit">Add Product</button>
+        </div>
+        <div>
+            <a asp-controller="Home" asp-action="Index">Back to list</a>
+        </div>
+    </form>
+</div>
