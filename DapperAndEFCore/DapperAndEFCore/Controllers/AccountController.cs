@@ -1,4 +1,5 @@
 ﻿using DapperAndEFCore.IdentityModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -64,11 +65,13 @@ namespace DapperAndEFCore.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult RegisterAdmin()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> RegisterAdmin(Register userRegInfo)
         {
@@ -140,6 +143,28 @@ namespace DapperAndEFCore.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(Register userInfo)
+        {
+            if (!ModelState.IsValid) { return View(); }
+
+            IdentityUser user = await _userManager.FindByEmailAsync(userInfo.Email);
+            if (user == null) { return View(); }
+            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            if (string.IsNullOrEmpty(token)) { return View(); }
+            await _userManager.ResetPasswordAsync(user, token, userInfo.Password);
+
+            return RedirectToAction("Index", "Home");
+
         }
     }
 }
