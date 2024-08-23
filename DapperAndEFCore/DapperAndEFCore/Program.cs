@@ -29,6 +29,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 
     options.User.RequireUniqueEmail = true;
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<EFCoreDbContext>();
 
 builder.Services.ConfigureApplicationCookie(options =>

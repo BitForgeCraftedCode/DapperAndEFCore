@@ -10,10 +10,12 @@ namespace DapperAndEFCore.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
         public IActionResult Index()
         {
@@ -38,6 +40,50 @@ namespace DapperAndEFCore.Controllers
             IdentityResult result = await _userManager.CreateAsync(user, userRegInfo.Password);
             if (result.Succeeded) 
             {
+               
+                if (!await _roleManager.RoleExistsAsync("StandardUser"))
+                {
+                    IdentityRole standerUserRole = new IdentityRole("StandardUser");
+                    await _roleManager.CreateAsync(standerUserRole);
+                }
+                await _userManager.AddToRoleAsync(user, "StandardUser");
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("Register", error.Description);
+                }
+                return View();
+            }
+        }
+
+        public IActionResult RegisterAdmin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterAdmin(Register userRegInfo)
+        {
+            if (!ModelState.IsValid) { return View(); }
+
+            IdentityUser user = new IdentityUser
+            {
+                Email = userRegInfo.Email,
+                UserName = userRegInfo.UserName
+            };
+            IdentityResult result = await _userManager.CreateAsync(user, userRegInfo.Password);
+            if (result.Succeeded)
+            {
+
+                if (!await _roleManager.RoleExistsAsync("Admin"))
+                {
+                    IdentityRole adminUserRole = new IdentityRole("Admin");
+                    await _roleManager.CreateAsync(adminUserRole);
+                }
+                await _userManager.AddToRoleAsync(user, "Admin");
                 return RedirectToAction("Login");
             }
             else
