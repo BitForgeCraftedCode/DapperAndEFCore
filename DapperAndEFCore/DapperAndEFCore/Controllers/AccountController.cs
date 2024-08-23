@@ -22,6 +22,11 @@ namespace DapperAndEFCore.Controllers
             return View();
         }
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         public IActionResult Register()
         {
             return View();
